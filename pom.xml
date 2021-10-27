@@ -7,7 +7,10 @@
     <groupId>org.example</groupId>
     <artifactId>OpenGL_2DGameEngine</artifactId>
     <version>1.0-SNAPSHOT</version>
+
     <properties>
+        <maven.compiler.source>16</maven.compiler.source>
+        <maven.compiler.target>16</maven.compiler.target>
         <lwjgl.version>3.2.3</lwjgl.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
     </properties>
