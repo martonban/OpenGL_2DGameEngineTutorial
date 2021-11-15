@@ -2,9 +2,11 @@ package luminance;
 
 
 import org.lwjgl.Version;
+import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -17,10 +19,17 @@ public class Window {
 
     private static Window window = null;
 
+    private float r, g, b, a;
+    private boolean fadeToBlack = false;
+
     private Window(){
         this.width = 1920;
         this.height = 1080;
         this.title = "Mario";
+        r = 1;
+        g = 1;
+        b = 1;
+        a = 1;
     }
 
 
@@ -36,6 +45,13 @@ public class Window {
         System.out.println(Version.getVersion());
         init();
         loop();
+
+        //Felszabdítjuk a memómóriát minden interáláskor.
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     public void init(){
@@ -58,10 +74,12 @@ public class Window {
             throw new IllegalStateException("NEm tudjuk létrehozni a GLFW Abalkot(Window)");
         }
 
-        glfwMakeContextCurrent(glfwWindow);
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
 
-        // v-sync bekapcsolása
-        //glfwSwapBuffers(1);
+        glfwMakeContextCurrent(glfwWindow);
 
         //Láthatóvá tesszük az ablakot
         glfwShowWindow(glfwWindow);
@@ -75,8 +93,23 @@ public class Window {
             //Poll Events
             glfwPollEvents();
 
-            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+
+
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            System.out.println(MouseListener.isDragging());
+
+            if(fadeToBlack){
+                r = Math.max(r - 0.01f, 0);
+                g = Math.max(g - 0.01f, 0);
+                b = Math.max(b - 0.01f, 0);
+            }
+
+            if(KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
+                fadeToBlack = true;
+
+            }
 
             glfwSwapBuffers(glfwWindow);
         }
