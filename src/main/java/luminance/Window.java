@@ -1,6 +1,10 @@
 package luminance;
 
 
+import jutil.Time;
+import luminance.sceneManager.LevelEditorScene;
+import luminance.sceneManager.LevelScene;
+import luminance.sceneManager.Scene;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
@@ -19,7 +23,10 @@ public class Window {
 
     private static Window window = null;
 
-    private float r, g, b, a;
+
+    private static Scene currentScene;
+
+    public float r, g, b, a;
     private boolean fadeToBlack = false;
 
     private Window(){
@@ -32,6 +39,21 @@ public class Window {
         a = 1;
     }
 
+
+    public static void changeScene(int newScene){
+        switch (newScene){
+            case 0:
+                currentScene =  new LevelEditorScene();
+                //currentScene.init();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            case 2:
+                assert false : "Unknown scene '" + newScene + "' ";
+                break;
+        }
+    }
 
     public static Window get(){
         if(Window.window == null){
@@ -62,7 +84,7 @@ public class Window {
         if(!glfwInit()){
             throw new IllegalStateException("Nem inicializálódik a GLFW");
         }
-        //Beállítjuk a GLFW-t
+        //SetUP GLFW
         glfwDefaultWindowHints();
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -86,20 +108,28 @@ public class Window {
 
         GL.createCapabilities();
 
+        Window.changeScene(0);
     }
 
     public void loop(){
+        float beginTime = Time.getTime();
+        float endTime = Time.getTime();
+        float deltaTime = -1.0f;
+
         while(!glfwWindowShouldClose(glfwWindow)){
             //Poll Events
             glfwPollEvents();
 
-
-
             glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            System.out.println(MouseListener.isDragging());
+            if(deltaTime >= 0){
+                currentScene.update(deltaTime);
+            }
 
+
+
+            /*
             if(fadeToBlack){
                 r = Math.max(r - 0.01f, 0);
                 g = Math.max(g - 0.01f, 0);
@@ -108,10 +138,15 @@ public class Window {
 
             if(KeyListener.isKeyPressed(GLFW_KEY_SPACE)){
                 fadeToBlack = true;
-
             }
+            */
+
 
             glfwSwapBuffers(glfwWindow);
+
+            endTime = Time.getTime();
+            deltaTime = endTime-beginTime;
+            beginTime = endTime;
         }
     }
 

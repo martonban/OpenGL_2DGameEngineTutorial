@@ -11,7 +11,7 @@
     <properties>
         <maven.compiler.source>16</maven.compiler.source>
         <maven.compiler.target>16</maven.compiler.target>
-        <lwjgl.version>3.2.3</lwjgl.version>
+        <lwjgl.version>3.3.0</lwjgl.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
     </properties>
 
