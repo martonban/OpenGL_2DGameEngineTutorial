@@ -1,5 +1,6 @@
 package main;
 
+
 import luminance.Window;
 
 public class Main {

@@ -6,7 +6,6 @@ import luminance.sceneManager.LevelEditorScene;
 import luminance.sceneManager.LevelScene;
 import luminance.sceneManager.Scene;
 import org.lwjgl.Version;
-import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.opengl.GL;
 
