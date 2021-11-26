@@ -11,13 +11,14 @@ import static org.lwjgl.opengl.GL30.*;
 public class LevelEditorScene extends Scene {
 
 
-    private String vertexShaderScr = "#version 330 core\n" +
-            "layout(location=0) in vec3 aPos;\n" +
-            "layout(location=1) in vec4 aColor;\n" +
+    private String vertexShaderSrc = "#version 330 core\n" +
+            "layout (location=0) in vec3 aPos;\n" +
+            "layout (location=1) in vec4 aColor;\n" +
             "\n" +
             "out vec4 fColor;\n" +
             "\n" +
-            "void main(){\n" +
+            "void main()\n" +
+            "{\n" +
             "    fColor = aColor;\n" +
             "    gl_Position = vec4(aPos, 1.0);\n" +
             "}";
@@ -28,7 +29,8 @@ public class LevelEditorScene extends Scene {
             "\n" +
             "out vec4 color;\n" +
             "\n" +
-            "void main(){\n" +
+            "void main()\n" +
+            "{\n" +
             "    color = fColor;\n" +
             "}";
 
@@ -42,6 +44,15 @@ public class LevelEditorScene extends Scene {
             0.5f,   0.5f,   0.0f,      0,0f, 0.0f, 1.0f, 1.0f, //top Right     2
             -0.5f,  -0.5f,  0.0f,      1,0f, 1.0f, 0.0f, 1.0f, //Bottom Left   3
     };
+    /*
+    private float[] vertexArray = {
+            // position               // color
+            0.5f, -0.5f, 0.0f,       1.0f, 0.0f, 0.0f, 1.0f, // Bottom right 0
+            -0.5f,  0.5f, 0.0f,       0.0f, 1.0f, 0.0f, 1.0f, // Top left     1
+            0.5f,  0.5f, 0.0f ,      0.0f, 0.0f, 1.0f, 1.0f, // Top right    2
+            -0.5f, -0.5f, 0.0f,       1.0f, 1.0f, 0.0f, 1.0f, // Bottom left  3
+    };
+    */
 
     private int[] elementArray = {
             2, 1, 0, //Top Right triangle
@@ -65,7 +76,7 @@ public class LevelEditorScene extends Scene {
         vertexID = glCreateShader(GL_VERTEX_SHADER);
 
         //Pass the shader source code to the GPU
-        glShaderSource(vertexID, vertexShaderScr);
+        glShaderSource(vertexID, vertexShaderSrc);
         glCompileShader(vertexID);
 
         // Check for errors in compilation process
@@ -106,7 +117,7 @@ public class LevelEditorScene extends Scene {
         if(success == GL_FALSE){
             int len = glGetProgrami(shaderProgram, GL_INFO_LOG_LENGTH);
             System.out.printf("ERROR: 'default.glsl' shader program is failed");
-            System.out.println(glGetProgramInfoLog(fragmentID, len));
+            System.out.println(glGetProgramInfoLog(shaderProgram, len));
             assert false : "";
         }
 
@@ -145,8 +156,9 @@ public class LevelEditorScene extends Scene {
         glEnableVertexAttribArray(0);
 
         glVertexAttribPointer(1, colorSize, GL_FLOAT, false,
-                vertexSizeBytes, (positionSize * floatSizeBytes) );
-        glEnableVertexAttribArray(0);
+                vertexSizeBytes, positionSize * floatSizeBytes);
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        glEnableVertexAttribArray(1);
 
     }
 
