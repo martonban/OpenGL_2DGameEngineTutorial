@@ -1,6 +1,11 @@
 package luminance.sceneManager;
 
+import luminance.Camera;
+
 public abstract class Scene {
+
+
+    protected Camera camera;
 
     public Scene() {
     }
